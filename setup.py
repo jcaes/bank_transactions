@@ -2,6 +2,7 @@ from setuptools import setup
 
 setup(name='bank_transactions',
       version='0.1',
+      install_requires=['nose'],
       description='Python package for importing bank transaction files.',
       url='https://github.com/henkvanramshorst/bank_transactions',
       author='Henk van Ramshorst',
