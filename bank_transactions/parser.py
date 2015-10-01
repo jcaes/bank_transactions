@@ -37,8 +37,7 @@ class FileColumn(object):
         
 
 class Parse(object):
-    def __init__(self, file, file_type, file_column, header_rows, date_format):
-        self.file = file
+    def __init__(self, file_type, file_column, header_rows, date_format):
         self.file_type = file_type
         self.file_column = file_column
         self.header_rows = header_rows
@@ -83,8 +82,8 @@ class Parse(object):
         )
         return t
         
-    def transactions(self):
-        data = FileReader.csv_to_data(self.file)
+    def transactions(self, file):
+        data = FileReader.csv_to_data(file)
         data = self.remove_headers(data)
         data = self.date_to_datetime(data)
         data = self.amount(data)
@@ -93,21 +92,21 @@ class Parse(object):
     
 
 class ParseRabobank(Parse):
-    def __init__(self, file):
+    def __init__(self):
         file_type = 'csv'
         file_column = FileColumn(2, 6, 10, 3, 4, 5, 8)
         header_rows = 1
         date_format = "%m/%d/%Y"
-        super(ParseRabobank, self).__init__(file, file_type, file_column, header_rows, date_format)
+        super(ParseRabobank, self).__init__(file_type, file_column, header_rows, date_format)
 
 
 class ParseKnab(Parse):
-    def __init__(self, file):
+    def __init__(self):
         file_type = 'csv'
         file_column = FileColumn(0, 5, 7, 4, 2, 6, 9)
         header_rows = 2
         date_format = "%d-%m-%Y"
-        super(ParseKnab, self).__init__(file, file_type, file_column, header_rows, date_format)
+        super(ParseKnab, self).__init__(file_type, file_column, header_rows, date_format)
         self.debit_column = 3
         
     def amount(self, data):
@@ -148,11 +147,11 @@ class Transactions(object):
         
 """ Map bank keys to Parse()-classes of banks """        
 banks = {
-    'rabobank': ParseRabobank(file),
-    'knab': ParseKnab(file)
+    'rabobank': ParseRabobank(),
+    'knab': ParseKnab()
 }        
     
 def main(bank, file):
     b = banks[bank]
-    trans = b.transactions()
+    trans = b.transactions(file)
     return trans        
